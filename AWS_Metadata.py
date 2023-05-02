@@ -3,7 +3,7 @@ import json
 
 metadata_url = 'http://169.254.169.254/latest/'
 
-
+#download the data from AWS
 def expand_tree(url, arr):
     output = {}
     for item in arr:
@@ -19,19 +19,19 @@ def expand_tree(url, arr):
             output[item] = text
     return output
 
-
+#To Initiate the process.
 def get_metadata():
     initial = ["meta-data/"]
     result = expand_tree(metadata_url, initial)
     return result
 
-
+#Capture the data to JSON
 def get_metadata_json():
     metadata = get_metadata()
     metadata_json = json.dumps(metadata, indent=4, sort_keys=True)
     return metadata_json
 
-
+#Verify the JSON format
 def is_json(myjson):
     try:
         json.loads(myjson)
@@ -39,6 +39,7 @@ def is_json(myjson):
         return False
     return True
 
+#Convert the data to Dictionary
 def gen_dict_extract(key, var):
     if hasattr(var, 'items'):
         for k, v in var.items():
@@ -52,7 +53,7 @@ def gen_dict_extract(key, var):
                     for result in gen_dict_extract(key, d):
                         yield result
 
-
+#Find the Value to key
 def find_key(key):
     metadata = get_metadata()
     return list(gen_dict_extract(key, metadata))
